@@ -1,0 +1,17 @@
+[package]
+name = "security-headers-checker"
+version = "0.1.0"
+edition = "2024"
+description = "Binary to check for HTTP security headers"
+license = "AGPL-3.0"
+repository = "https://github.com/brettberglund/security-headers-checker/"
+readme = "README.md"
+keywords = ["cli", "security", "http", "headers"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+url = "2"
+reqwest = { version = "0.12", features = ["blocking"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
