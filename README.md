@@ -2,6 +2,10 @@
 
 A CLI tool that scans URLs for missing or misconfigured HTTP security headers and produces a scored report.
 
+### Disclaimer
+Some header fields depend on the context of the site's functionality and how it was built.
+These fields still take away from score but at a reduced rate, so take it with a grain of salt.
+
 ## Usage
 
 ```
