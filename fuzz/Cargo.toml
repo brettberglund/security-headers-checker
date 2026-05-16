@@ -1,0 +1,41 @@
+[package]
+name = "security-headers-checker-fuzz"
+version = "0.0.1"
+edition = "2024"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+reqwest = "0.12"
+
+[dependencies.security-headers-checker]
+path = ".."
+
+[[bin]]
+name = "fuzz_normalize"
+path = "fuzz_targets/fuzz_normalize.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_hsts"
+path = "fuzz_targets/fuzz_hsts.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_csp"
+path = "fuzz_targets/fuzz_csp.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_x_frame_options"
+path = "fuzz_targets/fuzz_x_frame_options.rs"
+test = false
+doc = false
+
+[workspace]

@@ -1,0 +1,9 @@
+{
+  "header": "Referrer-Policy",
+  "status": "present",
+  "severity": "info",
+  "value": "strict-origin-when-cross-origin",
+  "message": "",
+  "remediation": "",
+  "references": []
+}

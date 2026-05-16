@@ -33,3 +33,32 @@ impl HeaderChecker for XXssProtectionChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn absent_is_info() {
+        let r = XXssProtectionChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Info);
+        assert!(r.message.is_empty());
+    }
+
+    #[test]
+    fn present_is_deprecated_low() {
+        let r = XXssProtectionChecker.check(&headers(&[("x-xss-protection", "1; mode=block")]));
+        assert_eq!(r.status, CheckStatus::Deprecated);
+        assert_eq!(r.severity, Severity::Low);
+        assert!(r.message.contains("deprecated"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn disabled_value_is_also_deprecated() {
+        let r = XXssProtectionChecker.check(&headers(&[("x-xss-protection", "0")]));
+        assert_eq!(r.status, CheckStatus::Deprecated);
+    }
+}

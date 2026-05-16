@@ -1,0 +1,11 @@
+{
+  "header": "X-XSS-Protection",
+  "status": "deprecated",
+  "severity": "low",
+  "value": "1; mode=block",
+  "message": "X-XSS-Protection is deprecated and can introduce vulnerabilities in older browsers.",
+  "remediation": "Remove this header and use Content-Security-Policy instead.",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection"
+  ]
+}

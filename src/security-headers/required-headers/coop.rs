@@ -38,3 +38,33 @@ impl HeaderChecker for CoopChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_low_with_context_note() {
+        let r = CoopChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Low);
+        assert!(r.context_note.is_some());
+    }
+
+    #[test]
+    fn same_origin_is_present() {
+        let r = CoopChecker
+            .check(&headers(&[("cross-origin-opener-policy", "same-origin")]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn any_value_is_present() {
+        let r = CoopChecker
+            .check(&headers(&[("cross-origin-opener-policy", "same-origin-allow-popups")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+}

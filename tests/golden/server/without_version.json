@@ -1,0 +1,11 @@
+{
+  "header": "Server",
+  "status": "present",
+  "severity": "low",
+  "value": "nginx",
+  "message": "Server header reveals software identity to attackers.",
+  "remediation": "Remove or genericise the Server header in your web server configuration.",
+  "references": [
+    "https://owasp.org/www-project-secure-headers/#server"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "header": "X-Frame-Options",
+  "status": "missing",
+  "severity": "medium",
+  "value": null,
+  "message": "X-Frame-Options is missing. Site may be vulnerable to clickjacking.",
+  "remediation": "Add: X-Frame-Options: DENY (or SAMEORIGIN)",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options",
+    "https://owasp.org/www-project-secure-headers/#x-frame-options"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "header": "Content-Security-Policy",
+  "status": "misconfigured",
+  "severity": "medium",
+  "value": "default-src *; frame-ancestors 'none'",
+  "message": "default-src * permits resources from any origin",
+  "remediation": "Remove 'unsafe-inline'/'unsafe-eval'; set a restrictive default-src; add frame-ancestors 'none' or 'self'.",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+    "https://owasp.org/www-project-secure-headers/#content-security-policy"
+  ]
+}

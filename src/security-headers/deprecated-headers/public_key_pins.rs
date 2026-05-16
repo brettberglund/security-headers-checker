@@ -33,3 +33,28 @@ impl HeaderChecker for PublicKeyPinsChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn absent_is_info() {
+        let r = PublicKeyPinsChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn present_is_deprecated_medium() {
+        let r = PublicKeyPinsChecker.check(&headers(&[(
+            "public-key-pins",
+            "pin-sha256=\"abc\"; max-age=5184000",
+        )]));
+        assert_eq!(r.status, CheckStatus::Deprecated);
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("deprecated"), "got: {}", r.message);
+    }
+}

@@ -125,3 +125,116 @@ fn compute_grade(score: u32) -> &'static str {
         _ => "F",
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckResult, CheckStatus, Severity};
+
+    fn missing(severity: Severity) -> CheckResult {
+        CheckResult {
+            header: "X".to_string(),
+            status: CheckStatus::Missing,
+            severity,
+            value: None,
+            message: String::new(),
+            remediation: String::new(),
+            references: vec![],
+            context_note: None,
+        }
+    }
+
+    fn missing_with_context(severity: Severity) -> CheckResult {
+        CheckResult { context_note: Some("note".to_string()), ..missing(severity) }
+    }
+
+    #[test]
+    fn grade_boundaries() {
+        assert_eq!(compute_grade(100), "A+");
+        assert_eq!(compute_grade(95), "A+");
+        assert_eq!(compute_grade(94), "A");
+        assert_eq!(compute_grade(85), "A");
+        assert_eq!(compute_grade(84), "B");
+        assert_eq!(compute_grade(70), "B");
+        assert_eq!(compute_grade(69), "C");
+        assert_eq!(compute_grade(55), "C");
+        assert_eq!(compute_grade(54), "D");
+        assert_eq!(compute_grade(40), "D");
+        assert_eq!(compute_grade(39), "F");
+        assert_eq!(compute_grade(0), "F");
+    }
+
+    #[test]
+    fn report_stem_strips_www() {
+        assert_eq!(report_stem("https://www.example.com"), "example");
+    }
+
+    #[test]
+    fn report_stem_apex_domain() {
+        assert_eq!(report_stem("https://example.com"), "example");
+    }
+
+    #[test]
+    fn report_stem_subdomain() {
+        assert_eq!(report_stem("https://api.foo.bar.com"), "api.foo.bar");
+    }
+
+    #[test]
+    fn report_stem_fallback_on_invalid() {
+        assert_eq!(report_stem("not-a-url"), "report");
+    }
+
+    #[test]
+    fn score_http_url_penalized_20() {
+        let score = compute_score("http://example.com", false, &[]);
+        assert_eq!(score, 80);
+    }
+
+    #[test]
+    fn score_no_https_redirect_penalized_10() {
+        let score = compute_score("https://example.com", false, &[]);
+        assert_eq!(score, 90);
+    }
+
+    #[test]
+    fn score_https_with_redirect_no_protocol_penalty() {
+        let score = compute_score("https://example.com", true, &[]);
+        assert_eq!(score, 100);
+    }
+
+    #[test]
+    fn score_clamps_to_zero() {
+        let findings: Vec<CheckResult> = (0..10).map(|_| missing(Severity::Critical)).collect();
+        let score = compute_score("https://example.com", true, &findings);
+        assert_eq!(score, 0);
+    }
+
+    #[test]
+    fn context_note_halves_severity_penalty() {
+        // Medium = 10 pts, halved = 5, so score = 95
+        let findings = vec![missing_with_context(Severity::Medium)];
+        let score = compute_score("https://example.com", true, &findings);
+        assert_eq!(score, 95);
+    }
+
+    #[test]
+    fn severity_penalties_are_correct() {
+        assert_eq!(severity_penalty(&Severity::Critical), 20);
+        assert_eq!(severity_penalty(&Severity::High), 15);
+        assert_eq!(severity_penalty(&Severity::Medium), 10);
+        assert_eq!(severity_penalty(&Severity::Low), 5);
+        assert_eq!(severity_penalty(&Severity::Info), 0);
+    }
+
+    #[test]
+    fn json_report_filename_format() {
+        let p = json_report_filename("https://www.example.com");
+        assert_eq!(p, "output/example.json");
+    }
+
+    #[test]
+    fn json_report_filename_subdomain() {
+        let p = json_report_filename("https://api.foo.bar.com");
+        assert_eq!(p, "output/api.foo.bar.json");
+    }
+}

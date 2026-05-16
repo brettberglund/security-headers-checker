@@ -1,7 +1,7 @@
 use reqwest::header::HeaderMap;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum CheckStatus {
     Present,
@@ -10,7 +10,7 @@ pub enum CheckStatus {
     Deprecated,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum Severity {
     Critical,

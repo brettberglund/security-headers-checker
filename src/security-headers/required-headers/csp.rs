@@ -32,7 +32,7 @@ impl HeaderChecker for CspChecker {
     }
 }
 
-fn analyze_csp(header_name: &str, v: String) -> CheckResult {
+pub(crate) fn analyze_csp(header_name: &str, v: String) -> CheckResult {
     let mut high_msgs: Vec<String> = vec![];
     let mut medium_msgs: Vec<String> = vec![];
 
@@ -123,5 +123,108 @@ fn analyze_csp(header_name: &str, v: String) -> CheckResult {
             "https://owasp.org/www-project-secure-headers/#content-security-policy".to_string(),
         ],
         context_note: None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_high() {
+        let r = CspChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::High);
+    }
+
+    #[test]
+    fn perfect_csp_is_present() {
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "default-src 'self'; frame-ancestors 'none'",
+        )]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+        assert!(r.message.is_empty());
+    }
+
+    #[test]
+    fn unsafe_inline_is_high() {
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "default-src 'self'; script-src 'unsafe-inline'; frame-ancestors 'none'",
+        )]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::High);
+        assert!(r.message.contains("'unsafe-inline'"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn unsafe_eval_is_high() {
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "default-src 'self'; script-src 'unsafe-eval'; frame-ancestors 'none'",
+        )]));
+        assert_eq!(r.severity, Severity::High);
+        assert!(r.message.contains("'unsafe-eval'"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn missing_frame_ancestors_is_medium() {
+        let r =
+            CspChecker.check(&headers(&[("content-security-policy", "default-src 'self'")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("frame-ancestors"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn missing_default_src_is_medium() {
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "script-src 'self'; frame-ancestors 'none'",
+        )]));
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("default-src"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn wildcard_default_src_is_medium() {
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "default-src *; frame-ancestors 'none'",
+        )]));
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("default-src *"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn unsafe_inline_outranks_missing_frame_ancestors() {
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "default-src 'self'; script-src 'unsafe-inline'",
+        )]));
+        // Both unsafe-inline (High) and missing frame-ancestors (Medium) present — High wins
+        assert_eq!(r.severity, Severity::High);
+    }
+
+    #[test]
+    fn case_insensitive_directive_names() {
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "Default-Src 'self'; Frame-Ancestors 'none'",
+        )]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn analyze_csp_perfect_returns_present() {
+        let r = analyze_csp(
+            "Content-Security-Policy",
+            "default-src 'self'; frame-ancestors 'none'".to_string(),
+        );
+        assert_eq!(r.status, CheckStatus::Present);
     }
 }

@@ -35,7 +35,7 @@ impl HeaderChecker for HstsChecker {
     }
 }
 
-fn analyze_hsts(header_name: &str, v: String) -> CheckResult {
+pub(crate) fn analyze_hsts(header_name: &str, v: String) -> CheckResult {
     let lower = v.to_lowercase();
     let mut msgs: Vec<String> = vec![];
     // Rank: 3=High, 2=Medium, 1=Low, 0=Info
@@ -121,5 +121,98 @@ fn analyze_hsts(header_name: &str, v: String) -> CheckResult {
             "https://owasp.org/www-project-secure-headers/#strict-transport-security".to_string(),
         ],
         context_note: None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_critical() {
+        let r = HstsChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Critical);
+        assert!(r.value.is_none());
+    }
+
+    #[test]
+    fn perfect_header_is_present() {
+        let r = HstsChecker.check(&headers(&[(
+            "strict-transport-security",
+            "max-age=31536000; includeSubDomains; preload",
+        )]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+        assert!(r.message.is_empty());
+        assert!(r.remediation.is_empty());
+    }
+
+    #[test]
+    fn short_max_age_is_high() {
+        let r = HstsChecker.check(&headers(&[("strict-transport-security", "max-age=1000")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::High);
+        assert!(r.message.contains("15768000"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn zero_max_age_is_high() {
+        let r = HstsChecker.check(&headers(&[("strict-transport-security", "max-age=0")]));
+        assert_eq!(r.severity, Severity::High);
+    }
+
+    #[test]
+    fn medium_max_age_is_medium() {
+        // 20_000_000 is between 6 months (15_768_000) and 1 year (31_536_000)
+        let r = HstsChecker
+            .check(&headers(&[("strict-transport-security", "max-age=20000000")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("31536000"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn max_age_only_is_low() {
+        let r =
+            HstsChecker.check(&headers(&[("strict-transport-security", "max-age=31536000")]));
+        assert_eq!(r.severity, Severity::Low);
+        assert!(r.message.contains("includeSubDomains"), "got: {}", r.message);
+        assert!(r.message.contains("preload"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn missing_only_preload_is_low() {
+        let r = HstsChecker.check(&headers(&[(
+            "strict-transport-security",
+            "max-age=31536000; includeSubDomains",
+        )]));
+        assert_eq!(r.severity, Severity::Low);
+        assert!(r.message.contains("preload"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn case_insensitive_directives() {
+        let r = HstsChecker.check(&headers(&[(
+            "strict-transport-security",
+            "MAX-AGE=31536000; IncludeSubDomains; Preload",
+        )]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn missing_max_age_directive_is_high() {
+        let r = HstsChecker
+            .check(&headers(&[("strict-transport-security", "includeSubDomains; preload")]));
+        assert_eq!(r.severity, Severity::High);
+        assert!(r.message.contains("max-age directive is missing"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn analyze_hsts_perfect_returns_present() {
+        let r = analyze_hsts("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload".to_string());
+        assert_eq!(r.status, CheckStatus::Present);
     }
 }

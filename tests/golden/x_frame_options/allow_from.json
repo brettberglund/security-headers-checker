@@ -1,0 +1,11 @@
+{
+  "header": "X-Frame-Options",
+  "status": "misconfigured",
+  "severity": "medium",
+  "value": "ALLOW-FROM https://example.com",
+  "message": "ALLOW-FROM is deprecated and ignored by all modern browsers; use CSP frame-ancestors instead.",
+  "remediation": "Replace with: Content-Security-Policy: frame-ancestors 'self' https://trusted.example.com",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options"
+  ]
+}

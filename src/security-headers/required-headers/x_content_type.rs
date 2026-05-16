@@ -59,3 +59,48 @@ impl HeaderChecker for XContentTypeOptionsChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_medium() {
+        let r = XContentTypeOptionsChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Medium);
+    }
+
+    #[test]
+    fn nosniff_is_present() {
+        let r =
+            XContentTypeOptionsChecker.check(&headers(&[("x-content-type-options", "nosniff")]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn nosniff_uppercase_is_present() {
+        let r =
+            XContentTypeOptionsChecker.check(&headers(&[("x-content-type-options", "NOSNIFF")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn nosniff_with_whitespace_is_present() {
+        let r = XContentTypeOptionsChecker
+            .check(&headers(&[("x-content-type-options", "  nosniff  ")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn invalid_value_is_medium() {
+        let r =
+            XContentTypeOptionsChecker.check(&headers(&[("x-content-type-options", "sniff")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("sniff"), "got: {}", r.message);
+    }
+}

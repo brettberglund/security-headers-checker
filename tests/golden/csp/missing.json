@@ -1,0 +1,12 @@
+{
+  "header": "Content-Security-Policy",
+  "status": "missing",
+  "severity": "high",
+  "value": null,
+  "message": "CSP is missing. No control over what resources the browser may load.",
+  "remediation": "Add: Content-Security-Policy: default-src 'self'; frame-ancestors 'none'",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+    "https://owasp.org/www-project-secure-headers/#content-security-policy"
+  ]
+}

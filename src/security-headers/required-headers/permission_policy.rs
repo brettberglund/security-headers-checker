@@ -99,3 +99,61 @@ fn analyze_permissions_policy(header_name: &str, v: String) -> CheckResult {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_low_with_context_note() {
+        let r = PermissionsPolicyChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Low);
+        assert!(r.context_note.is_some());
+    }
+
+    #[test]
+    fn restricted_features_is_present() {
+        let r = PermissionsPolicyChecker.check(&headers(&[(
+            "permissions-policy",
+            "camera=(), microphone=(), geolocation=()",
+        )]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn camera_wildcard_is_medium() {
+        let r =
+            PermissionsPolicyChecker.check(&headers(&[("permissions-policy", "camera=*")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("camera"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn geolocation_wildcard_is_medium() {
+        let r = PermissionsPolicyChecker
+            .check(&headers(&[("permissions-policy", "geolocation=*")]));
+        assert_eq!(r.severity, Severity::Medium);
+    }
+
+    #[test]
+    fn non_sensitive_wildcard_is_present() {
+        let r = PermissionsPolicyChecker
+            .check(&headers(&[("permissions-policy", "fullscreen=*")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn mixed_sensitive_and_restricted_is_medium() {
+        let r = PermissionsPolicyChecker.check(&headers(&[(
+            "permissions-policy",
+            "camera=(), microphone=*, geolocation=()",
+        )]));
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("microphone"), "got: {}", r.message);
+    }
+}

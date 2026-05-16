@@ -38,3 +38,33 @@ impl HeaderChecker for CorpChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_low_with_context_note() {
+        let r = CorpChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Low);
+        assert!(r.context_note.is_some());
+    }
+
+    #[test]
+    fn same_origin_is_present() {
+        let r = CorpChecker
+            .check(&headers(&[("cross-origin-resource-policy", "same-origin")]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn same_site_is_present() {
+        let r =
+            CorpChecker.check(&headers(&[("cross-origin-resource-policy", "same-site")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+}

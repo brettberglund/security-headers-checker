@@ -1,0 +1,11 @@
+{
+  "header": "Referrer-Policy",
+  "status": "missing",
+  "severity": "low",
+  "value": null,
+  "message": "Referrer-Policy is missing. Browser default may leak URL data in the Referer header.",
+  "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy"
+  ]
+}

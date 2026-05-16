@@ -1,0 +1,9 @@
+{
+  "header": "Cache-Control",
+  "status": "present",
+  "severity": "info",
+  "value": "no-store",
+  "message": "",
+  "remediation": "",
+  "references": []
+}

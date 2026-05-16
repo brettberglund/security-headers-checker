@@ -1,0 +1,12 @@
+{
+  "header": "Content-Security-Policy",
+  "status": "misconfigured",
+  "severity": "medium",
+  "value": "default-src 'self'",
+  "message": "missing frame-ancestors directive; clickjacking protection relies solely on X-Frame-Options",
+  "remediation": "Remove 'unsafe-inline'/'unsafe-eval'; set a restrictive default-src; add frame-ancestors 'none' or 'self'.",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+    "https://owasp.org/www-project-secure-headers/#content-security-policy"
+  ]
+}

@@ -38,3 +38,26 @@ impl HeaderChecker for CoepChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_info_with_context_note() {
+        let r = CoepChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Info);
+        assert!(r.context_note.is_some());
+    }
+
+    #[test]
+    fn require_corp_is_present() {
+        let r = CoepChecker
+            .check(&headers(&[("cross-origin-embedder-policy", "require-corp")]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+    }
+}

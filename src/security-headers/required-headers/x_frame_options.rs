@@ -99,3 +99,67 @@ impl HeaderChecker for XFrameOptionsChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_medium() {
+        let r = XFrameOptionsChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Medium);
+    }
+
+    #[test]
+    fn deny_is_present() {
+        let r = XFrameOptionsChecker.check(&headers(&[("x-frame-options", "DENY")]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn sameorigin_is_present() {
+        let r = XFrameOptionsChecker.check(&headers(&[("x-frame-options", "SAMEORIGIN")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn deny_case_insensitive() {
+        let r = XFrameOptionsChecker.check(&headers(&[("x-frame-options", "deny")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn allowall_is_high() {
+        let r = XFrameOptionsChecker.check(&headers(&[("x-frame-options", "ALLOWALL")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::High);
+    }
+
+    #[test]
+    fn allow_from_is_medium() {
+        let r = XFrameOptionsChecker
+            .check(&headers(&[("x-frame-options", "ALLOW-FROM https://example.com")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("deprecated"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn unrecognised_value_is_medium() {
+        let r =
+            XFrameOptionsChecker.check(&headers(&[("x-frame-options", "SOME-UNKNOWN-VALUE")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Medium);
+        assert!(r.message.contains("SOME-UNKNOWN-VALUE"), "got: {}", r.message);
+    }
+
+    #[test]
+    fn allowall_lowercase_is_high() {
+        let r = XFrameOptionsChecker.check(&headers(&[("x-frame-options", "allowall")]));
+        assert_eq!(r.severity, Severity::High);
+    }
+}

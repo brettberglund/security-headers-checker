@@ -1,0 +1,12 @@
+{
+  "header": "X-Frame-Options",
+  "status": "misconfigured",
+  "severity": "high",
+  "value": "ALLOWALL",
+  "message": "ALLOWALL explicitly permits framing by any origin, negating clickjacking protection.",
+  "remediation": "Use DENY or SAMEORIGIN, or prefer Content-Security-Policy: frame-ancestors 'none'.",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options",
+    "https://owasp.org/www-project-secure-headers/#x-frame-options"
+  ]
+}

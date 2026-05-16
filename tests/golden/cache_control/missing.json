@@ -1,0 +1,12 @@
+{
+  "header": "Cache-Control",
+  "status": "missing",
+  "severity": "medium",
+  "value": null,
+  "message": "Cache-Control is missing. Sensitive responses may be cached by proxies or browsers.",
+  "remediation": "Add: Cache-Control: no-store on authenticated or sensitive endpoints.",
+  "references": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control"
+  ],
+  "context_note": "Critical on authenticated or sensitive endpoints where caching would expose private data. Public, unauthenticated pages with no sensitive content can safely omit or relax this header."
+}

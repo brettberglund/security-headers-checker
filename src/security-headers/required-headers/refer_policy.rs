@@ -84,3 +84,70 @@ impl HeaderChecker for ReferrerPolicyChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn missing_is_low() {
+        let r = ReferrerPolicyChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Low);
+    }
+
+    #[test]
+    fn strict_origin_is_present() {
+        let r = ReferrerPolicyChecker.check(&headers(&[(
+            "referrer-policy",
+            "strict-origin-when-cross-origin",
+        )]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn no_referrer_is_present() {
+        let r = ReferrerPolicyChecker.check(&headers(&[("referrer-policy", "no-referrer")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn origin_is_present() {
+        let r = ReferrerPolicyChecker.check(&headers(&[("referrer-policy", "origin")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn unsafe_url_is_medium() {
+        let r = ReferrerPolicyChecker.check(&headers(&[("referrer-policy", "unsafe-url")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Medium);
+    }
+
+    #[test]
+    fn no_referrer_when_downgrade_is_low() {
+        let r = ReferrerPolicyChecker
+            .check(&headers(&[("referrer-policy", "no-referrer-when-downgrade")]));
+        assert_eq!(r.status, CheckStatus::Misconfigured);
+        assert_eq!(r.severity, Severity::Low);
+    }
+
+    #[test]
+    fn multi_value_last_token_wins_safe() {
+        // "unsafe-url, no-referrer" → effective policy = "no-referrer" → Present
+        let r = ReferrerPolicyChecker
+            .check(&headers(&[("referrer-policy", "unsafe-url, no-referrer")]));
+        assert_eq!(r.status, CheckStatus::Present);
+    }
+
+    #[test]
+    fn multi_value_last_token_wins_unsafe() {
+        // "no-referrer, unsafe-url" → effective policy = "unsafe-url" → Medium
+        let r = ReferrerPolicyChecker
+            .check(&headers(&[("referrer-policy", "no-referrer, unsafe-url")]));
+        assert_eq!(r.severity, Severity::Medium);
+    }
+}

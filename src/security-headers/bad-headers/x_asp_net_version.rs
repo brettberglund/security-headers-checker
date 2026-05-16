@@ -32,3 +32,25 @@ impl HeaderChecker for XAspNetVersionChecker {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::header_checker::{CheckStatus, Severity};
+    use crate::test_utils::headers;
+
+    #[test]
+    fn absent_is_info() {
+        let r = XAspNetVersionChecker.check(&headers(&[]));
+        assert_eq!(r.status, CheckStatus::Missing);
+        assert_eq!(r.severity, Severity::Info);
+    }
+
+    #[test]
+    fn present_is_low() {
+        let r =
+            XAspNetVersionChecker.check(&headers(&[("x-aspnet-version", "4.0.30319")]));
+        assert_eq!(r.status, CheckStatus::Present);
+        assert_eq!(r.severity, Severity::Low);
+    }
+}

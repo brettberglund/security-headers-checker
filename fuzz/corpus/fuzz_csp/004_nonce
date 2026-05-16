@@ -1,0 +1,1 @@
+default-src 'nonce-abc123'; script-src 'nonce-abc123'; frame-ancestors 'self'
