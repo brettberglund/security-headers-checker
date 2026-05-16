@@ -126,8 +126,7 @@ mod tests {
 
     #[test]
     fn camera_wildcard_is_medium() {
-        let r =
-            PermissionsPolicyChecker.check(&headers(&[("permissions-policy", "camera=*")]));
+        let r = PermissionsPolicyChecker.check(&headers(&[("permissions-policy", "camera=*")]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
         assert!(r.message.contains("camera"), "got: {}", r.message);
@@ -135,15 +134,14 @@ mod tests {
 
     #[test]
     fn geolocation_wildcard_is_medium() {
-        let r = PermissionsPolicyChecker
-            .check(&headers(&[("permissions-policy", "geolocation=*")]));
+        let r =
+            PermissionsPolicyChecker.check(&headers(&[("permissions-policy", "geolocation=*")]));
         assert_eq!(r.severity, Severity::Medium);
     }
 
     #[test]
     fn non_sensitive_wildcard_is_present() {
-        let r = PermissionsPolicyChecker
-            .check(&headers(&[("permissions-policy", "fullscreen=*")]));
+        let r = PermissionsPolicyChecker.check(&headers(&[("permissions-policy", "fullscreen=*")]));
         assert_eq!(r.status, CheckStatus::Present);
     }
 

@@ -141,8 +141,10 @@ mod tests {
 
     #[test]
     fn allow_from_is_medium() {
-        let r = XFrameOptionsChecker
-            .check(&headers(&[("x-frame-options", "ALLOW-FROM https://example.com")]));
+        let r = XFrameOptionsChecker.check(&headers(&[(
+            "x-frame-options",
+            "ALLOW-FROM https://example.com",
+        )]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
         assert!(r.message.contains("deprecated"), "got: {}", r.message);
@@ -150,11 +152,14 @@ mod tests {
 
     #[test]
     fn unrecognised_value_is_medium() {
-        let r =
-            XFrameOptionsChecker.check(&headers(&[("x-frame-options", "SOME-UNKNOWN-VALUE")]));
+        let r = XFrameOptionsChecker.check(&headers(&[("x-frame-options", "SOME-UNKNOWN-VALUE")]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
-        assert!(r.message.contains("SOME-UNKNOWN-VALUE"), "got: {}", r.message);
+        assert!(
+            r.message.contains("SOME-UNKNOWN-VALUE"),
+            "got: {}",
+            r.message
+        );
     }
 
     #[test]

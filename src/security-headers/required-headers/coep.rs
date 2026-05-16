@@ -55,8 +55,10 @@ mod tests {
 
     #[test]
     fn require_corp_is_present() {
-        let r = CoepChecker
-            .check(&headers(&[("cross-origin-embedder-policy", "require-corp")]));
+        let r = CoepChecker.check(&headers(&[(
+            "cross-origin-embedder-policy",
+            "require-corp",
+        )]));
         assert_eq!(r.status, CheckStatus::Present);
         assert_eq!(r.severity, Severity::Info);
     }

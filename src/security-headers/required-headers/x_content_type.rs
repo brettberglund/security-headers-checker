@@ -97,8 +97,7 @@ mod tests {
 
     #[test]
     fn invalid_value_is_medium() {
-        let r =
-            XContentTypeOptionsChecker.check(&headers(&[("x-content-type-options", "sniff")]));
+        let r = XContentTypeOptionsChecker.check(&headers(&[("x-content-type-options", "sniff")]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
         assert!(r.message.contains("sniff"), "got: {}", r.message);

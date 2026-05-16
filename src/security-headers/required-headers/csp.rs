@@ -173,8 +173,10 @@ mod tests {
 
     #[test]
     fn missing_frame_ancestors_is_medium() {
-        let r =
-            CspChecker.check(&headers(&[("content-security-policy", "default-src 'self'")]));
+        let r = CspChecker.check(&headers(&[(
+            "content-security-policy",
+            "default-src 'self'",
+        )]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
         assert!(r.message.contains("frame-ancestors"), "got: {}", r.message);

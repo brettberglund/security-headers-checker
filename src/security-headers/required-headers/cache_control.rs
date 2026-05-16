@@ -138,15 +138,13 @@ mod tests {
 
     #[test]
     fn no_store_no_cache_is_present() {
-        let r = CacheControlChecker
-            .check(&headers(&[("cache-control", "no-store, no-cache")]));
+        let r = CacheControlChecker.check(&headers(&[("cache-control", "no-store, no-cache")]));
         assert_eq!(r.status, CheckStatus::Present);
     }
 
     #[test]
     fn max_age_only_is_medium() {
-        let r =
-            CacheControlChecker.check(&headers(&[("cache-control", "max-age=3600")]));
+        let r = CacheControlChecker.check(&headers(&[("cache-control", "max-age=3600")]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
         assert!(r.message.contains("no-store"), "got: {}", r.message);
@@ -154,16 +152,14 @@ mod tests {
 
     #[test]
     fn public_max_age_is_medium() {
-        let r = CacheControlChecker
-            .check(&headers(&[("cache-control", "public, max-age=3600")]));
+        let r = CacheControlChecker.check(&headers(&[("cache-control", "public, max-age=3600")]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
     }
 
     #[test]
     fn no_store_with_max_age_is_low() {
-        let r = CacheControlChecker
-            .check(&headers(&[("cache-control", "no-store, max-age=3600")]));
+        let r = CacheControlChecker.check(&headers(&[("cache-control", "no-store, max-age=3600")]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Low);
         assert!(r.message.contains("misleading"), "got: {}", r.message);

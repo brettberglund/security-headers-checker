@@ -49,8 +49,7 @@ mod tests {
 
     #[test]
     fn present_is_low() {
-        let r =
-            XAspNetMvcVersionChecker.check(&headers(&[("x-aspnetmvc-version", "5.2")]));
+        let r = XAspNetMvcVersionChecker.check(&headers(&[("x-aspnetmvc-version", "5.2")]));
         assert_eq!(r.status, CheckStatus::Present);
         assert_eq!(r.severity, Severity::Low);
     }

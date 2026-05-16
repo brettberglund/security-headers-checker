@@ -1,17 +1,14 @@
 mod common;
 
-use security_headers_checker::security_headers::required_headers::{
-    cache_control::CacheControlChecker,
-    csp::CspChecker,
-    hsts::HstsChecker,
-    refer_policy::ReferrerPolicyChecker,
-    x_frame_options::XFrameOptionsChecker,
-};
+use security_headers_checker::HeaderChecker;
 use security_headers_checker::security_headers::bad_headers::server::ServerChecker;
 use security_headers_checker::security_headers::deprecated_headers::{
     public_key_pins::PublicKeyPinsChecker, xxss_protection::XXssProtectionChecker,
 };
-use security_headers_checker::HeaderChecker;
+use security_headers_checker::security_headers::required_headers::{
+    cache_control::CacheControlChecker, csp::CspChecker, hsts::HstsChecker,
+    refer_policy::ReferrerPolicyChecker, x_frame_options::XFrameOptionsChecker,
+};
 
 // ── HSTS ─────────────────────────────────────────────────────────────────────
 
@@ -32,21 +29,31 @@ fn hsts_perfect() {
 
 #[test]
 fn hsts_short_max_age() {
-    let r = HstsChecker.check(&common::headers(&[("strict-transport-security", "max-age=1000")]));
+    let r = HstsChecker.check(&common::headers(&[(
+        "strict-transport-security",
+        "max-age=1000",
+    )]));
     common::assert_golden(&serde_json::to_value(r).unwrap(), "hsts/short_max_age.json");
 }
 
 #[test]
 fn hsts_medium_max_age() {
-    let r = HstsChecker
-        .check(&common::headers(&[("strict-transport-security", "max-age=20000000")]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "hsts/medium_max_age.json");
+    let r = HstsChecker.check(&common::headers(&[(
+        "strict-transport-security",
+        "max-age=20000000",
+    )]));
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "hsts/medium_max_age.json",
+    );
 }
 
 #[test]
 fn hsts_no_subdomains() {
-    let r = HstsChecker
-        .check(&common::headers(&[("strict-transport-security", "max-age=31536000")]));
+    let r = HstsChecker.check(&common::headers(&[(
+        "strict-transport-security",
+        "max-age=31536000",
+    )]));
     common::assert_golden(&serde_json::to_value(r).unwrap(), "hsts/no_subdomains.json");
 }
 
@@ -82,7 +89,10 @@ fn csp_no_frame_ancestors() {
         "content-security-policy",
         "default-src 'self'",
     )]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "csp/no_frame_ancestors.json");
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "csp/no_frame_ancestors.json",
+    );
 }
 
 #[test]
@@ -102,19 +112,28 @@ fn csp_wildcard_default_src() {
 #[test]
 fn xfo_missing() {
     let r = XFrameOptionsChecker.check(&common::headers(&[]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "x_frame_options/missing.json");
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "x_frame_options/missing.json",
+    );
 }
 
 #[test]
 fn xfo_deny() {
     let r = XFrameOptionsChecker.check(&common::headers(&[("x-frame-options", "DENY")]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "x_frame_options/deny.json");
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "x_frame_options/deny.json",
+    );
 }
 
 #[test]
 fn xfo_allowall() {
     let r = XFrameOptionsChecker.check(&common::headers(&[("x-frame-options", "ALLOWALL")]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "x_frame_options/allowall.json");
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "x_frame_options/allowall.json",
+    );
 }
 
 #[test]
@@ -123,7 +142,10 @@ fn xfo_allow_from() {
         "x-frame-options",
         "ALLOW-FROM https://example.com",
     )]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "x_frame_options/allow_from.json");
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "x_frame_options/allow_from.json",
+    );
 }
 
 // ── Referrer-Policy ──────────────────────────────────────────────────────────
@@ -189,13 +211,19 @@ fn server_absent() {
 #[test]
 fn server_with_version() {
     let r = ServerChecker.check(&common::headers(&[("server", "Apache/2.4.51")]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "server/with_version.json");
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "server/with_version.json",
+    );
 }
 
 #[test]
 fn server_without_version() {
     let r = ServerChecker.check(&common::headers(&[("server", "nginx")]));
-    common::assert_golden(&serde_json::to_value(r).unwrap(), "server/without_version.json");
+    common::assert_golden(
+        &serde_json::to_value(r).unwrap(),
+        "server/without_version.json",
+    );
 }
 
 // ── Deprecated headers ────────────────────────────────────────────────────────
@@ -211,8 +239,7 @@ fn xxss_protection_absent() {
 
 #[test]
 fn xxss_protection_present() {
-    let r =
-        XXssProtectionChecker.check(&common::headers(&[("x-xss-protection", "1; mode=block")]));
+    let r = XXssProtectionChecker.check(&common::headers(&[("x-xss-protection", "1; mode=block")]));
     common::assert_golden(
         &serde_json::to_value(r).unwrap(),
         "deprecated/xxss_present.json",

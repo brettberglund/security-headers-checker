@@ -27,9 +27,7 @@ pub fn assert_golden(json: &serde_json::Value, golden_path: &str) {
         return;
     }
     let content = std::fs::read_to_string(&path).unwrap_or_else(|_| {
-        panic!(
-            "golden file missing: {path}\nrun `UPDATE_GOLDEN=1 cargo test` to generate it"
-        )
+        panic!("golden file missing: {path}\nrun `UPDATE_GOLDEN=1 cargo test` to generate it")
     });
     let expected: serde_json::Value = serde_json::from_str(&content).unwrap();
     assert_eq!(*json, expected, "golden mismatch for {path}");

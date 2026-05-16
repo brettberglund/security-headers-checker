@@ -55,16 +55,17 @@ mod tests {
 
     #[test]
     fn same_origin_is_present() {
-        let r = CoopChecker
-            .check(&headers(&[("cross-origin-opener-policy", "same-origin")]));
+        let r = CoopChecker.check(&headers(&[("cross-origin-opener-policy", "same-origin")]));
         assert_eq!(r.status, CheckStatus::Present);
         assert_eq!(r.severity, Severity::Info);
     }
 
     #[test]
     fn any_value_is_present() {
-        let r = CoopChecker
-            .check(&headers(&[("cross-origin-opener-policy", "same-origin-allow-popups")]));
+        let r = CoopChecker.check(&headers(&[(
+            "cross-origin-opener-policy",
+            "same-origin-allow-popups",
+        )]));
         assert_eq!(r.status, CheckStatus::Present);
     }
 }

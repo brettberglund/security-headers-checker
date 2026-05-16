@@ -129,8 +129,10 @@ mod tests {
 
     #[test]
     fn no_referrer_when_downgrade_is_low() {
-        let r = ReferrerPolicyChecker
-            .check(&headers(&[("referrer-policy", "no-referrer-when-downgrade")]));
+        let r = ReferrerPolicyChecker.check(&headers(&[(
+            "referrer-policy",
+            "no-referrer-when-downgrade",
+        )]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Low);
     }

@@ -84,7 +84,11 @@ mod tests {
         let r = ServerChecker.check(&headers(&[("server", "Apache/2.4.51")]));
         assert_eq!(r.status, CheckStatus::Present);
         assert_eq!(r.severity, Severity::Medium);
-        assert!(r.message.contains("version information"), "got: {}", r.message);
+        assert!(
+            r.message.contains("version information"),
+            "got: {}",
+            r.message
+        );
     }
 
     #[test]

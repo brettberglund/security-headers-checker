@@ -55,16 +55,14 @@ mod tests {
 
     #[test]
     fn same_origin_is_present() {
-        let r = CorpChecker
-            .check(&headers(&[("cross-origin-resource-policy", "same-origin")]));
+        let r = CorpChecker.check(&headers(&[("cross-origin-resource-policy", "same-origin")]));
         assert_eq!(r.status, CheckStatus::Present);
         assert_eq!(r.severity, Severity::Info);
     }
 
     #[test]
     fn same_site_is_present() {
-        let r =
-            CorpChecker.check(&headers(&[("cross-origin-resource-policy", "same-site")]));
+        let r = CorpChecker.check(&headers(&[("cross-origin-resource-policy", "same-site")]));
         assert_eq!(r.status, CheckStatus::Present);
     }
 }

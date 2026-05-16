@@ -48,8 +48,7 @@ mod tests {
 
     #[test]
     fn present_is_low() {
-        let r =
-            XAspNetVersionChecker.check(&headers(&[("x-aspnet-version", "4.0.30319")]));
+        let r = XAspNetVersionChecker.check(&headers(&[("x-aspnet-version", "4.0.30319")]));
         assert_eq!(r.status, CheckStatus::Present);
         assert_eq!(r.severity, Severity::Low);
     }

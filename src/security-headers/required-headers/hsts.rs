@@ -167,8 +167,10 @@ mod tests {
     #[test]
     fn medium_max_age_is_medium() {
         // 20_000_000 is between 6 months (15_768_000) and 1 year (31_536_000)
-        let r = HstsChecker
-            .check(&headers(&[("strict-transport-security", "max-age=20000000")]));
+        let r = HstsChecker.check(&headers(&[(
+            "strict-transport-security",
+            "max-age=20000000",
+        )]));
         assert_eq!(r.status, CheckStatus::Misconfigured);
         assert_eq!(r.severity, Severity::Medium);
         assert!(r.message.contains("31536000"), "got: {}", r.message);
@@ -176,10 +178,16 @@ mod tests {
 
     #[test]
     fn max_age_only_is_low() {
-        let r =
-            HstsChecker.check(&headers(&[("strict-transport-security", "max-age=31536000")]));
+        let r = HstsChecker.check(&headers(&[(
+            "strict-transport-security",
+            "max-age=31536000",
+        )]));
         assert_eq!(r.severity, Severity::Low);
-        assert!(r.message.contains("includeSubDomains"), "got: {}", r.message);
+        assert!(
+            r.message.contains("includeSubDomains"),
+            "got: {}",
+            r.message
+        );
         assert!(r.message.contains("preload"), "got: {}", r.message);
     }
 
@@ -204,15 +212,24 @@ mod tests {
 
     #[test]
     fn missing_max_age_directive_is_high() {
-        let r = HstsChecker
-            .check(&headers(&[("strict-transport-security", "includeSubDomains; preload")]));
+        let r = HstsChecker.check(&headers(&[(
+            "strict-transport-security",
+            "includeSubDomains; preload",
+        )]));
         assert_eq!(r.severity, Severity::High);
-        assert!(r.message.contains("max-age directive is missing"), "got: {}", r.message);
+        assert!(
+            r.message.contains("max-age directive is missing"),
+            "got: {}",
+            r.message
+        );
     }
 
     #[test]
     fn analyze_hsts_perfect_returns_present() {
-        let r = analyze_hsts("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload".to_string());
+        let r = analyze_hsts(
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains; preload".to_string(),
+        );
         assert_eq!(r.status, CheckStatus::Present);
     }
 }

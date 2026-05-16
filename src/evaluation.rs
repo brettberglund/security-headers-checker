@@ -145,7 +145,10 @@ mod tests {
     }
 
     fn missing_with_context(severity: Severity) -> CheckResult {
-        CheckResult { context_note: Some("note".to_string()), ..missing(severity) }
+        CheckResult {
+            context_note: Some("note".to_string()),
+            ..missing(severity)
+        }
     }
 
     #[test]
