@@ -1,7 +1,7 @@
 {
   "header": "X-Frame-Options",
   "message": "X-Frame-Options is missing. Site may be vulnerable to clickjacking.",
-  "notes": "Sites that want to be embeddable — widgets, video players, partner integrations — may omit this deliberately; it matters most on pages with sensitive, click-driven actions.",
+  "notes": "Sites that want to be embeddable: widgets, video players, partner integrations may omit this deliberately. It matters most on pages with sensitive, click-driven actions.",
   "references": [
     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options",
     "https://owasp.org/www-project-secure-headers/#x-frame-options"

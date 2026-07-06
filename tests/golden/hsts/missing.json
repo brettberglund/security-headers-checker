@@ -1,7 +1,7 @@
 {
   "header": "Strict-Transport-Security",
   "message": "HSTS is missing. Non-browser clients (curl, mobile apps, APIs) receive no upgrade protection, and first-time visitors are vulnerable to downgrade attacks before any HSTS cache is established. The header is also required for preload-list eligibility.",
-  "notes": "Unlike most headers checked here, there's rarely a legitimate reason to omit HSTS on a site that already serves HTTPS — its absence is usually an oversight, not a deliberate trade-off.",
+  "notes": "There's rarely a legitimate reason to omit HSTS on a site that already serves HTTPS. Its absence is usually an oversight, not a deliberate trade-off.",
   "references": [
     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security",
     "https://owasp.org/www-project-secure-headers/#strict-transport-security"
