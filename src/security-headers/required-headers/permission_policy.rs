@@ -30,6 +30,7 @@ impl HeaderChecker for PermissionsPolicyChecker {
                      features. Static or read-only pages have no features to restrict."
                         .to_string(),
                 ),
+                notes: Some(PERMISSIONS_POLICY_TRADEOFF_NOTE.to_string()),
             },
             Some(v) => analyze_permissions_policy(self.name(), v),
         }
@@ -49,6 +50,10 @@ const SENSITIVE_FEATURES: &[&str] = &[
     "display-capture",
     "ambient-light-sensor",
 ];
+
+const PERMISSIONS_POLICY_TRADEOFF_NOTE: &str = "Getting the allowlist wrong can break a legitimate embedded feature (e.g. a video-chat \
+     widget needing camera/microphone), so many teams skip it rather than risk misconfiguring \
+     it.";
 
 fn analyze_permissions_policy(header_name: &str, v: String) -> CheckResult {
     let mut medium_msgs: Vec<String> = vec![];
@@ -75,6 +80,7 @@ fn analyze_permissions_policy(header_name: &str, v: String) -> CheckResult {
             remediation: String::new(),
             references: vec![],
             context_note: None,
+            notes: None,
         }
     } else {
         CheckResult {
@@ -96,6 +102,7 @@ fn analyze_permissions_policy(header_name: &str, v: String) -> CheckResult {
                  features."
                     .to_string(),
             ),
+            notes: Some(PERMISSIONS_POLICY_TRADEOFF_NOTE.to_string()),
         }
     }
 }

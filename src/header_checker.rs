@@ -39,6 +39,11 @@ pub struct CheckResult {
     /// unfairly penalised.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub context_note: Option<String>,
+    /// Purely informational: why real-world sites commonly skip or weaken this
+    /// header (e.g. it would break OAuth popups, ad embeds, or third-party
+    /// widgets). Unlike `context_note`, this never affects scoring.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub notes: Option<String>,
 }
 
 pub(crate) fn get_header(headers: &HeaderMap, name: &str) -> Option<String> {

@@ -1,12 +1,13 @@
 {
   "header": "Content-Security-Policy",
-  "status": "misconfigured",
-  "severity": "medium",
-  "value": "default-src 'self'",
   "message": "missing frame-ancestors directive; clickjacking protection relies solely on X-Frame-Options",
-  "remediation": "Remove 'unsafe-inline'/'unsafe-eval'; set a restrictive default-src; add frame-ancestors 'none' or 'self'.",
+  "notes": "Often skipped or weakened (e.g. 'unsafe-inline'/'unsafe-eval') because a strict policy requires allowlisting every script and style source across the whole site; one new third-party script, ad, or inline style can break the page unless CSP is updated in lockstep.",
   "references": [
     "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
     "https://owasp.org/www-project-secure-headers/#content-security-policy"
-  ]
+  ],
+  "remediation": "Remove 'unsafe-inline'/'unsafe-eval'; set a restrictive default-src; add frame-ancestors 'none' or 'self'.",
+  "severity": "medium",
+  "status": "misconfigured",
+  "value": "default-src 'self'"
 }

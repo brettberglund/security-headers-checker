@@ -17,6 +17,7 @@ impl HeaderChecker for XXssProtectionChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
             Some(v) => CheckResult {
                 header: self.name().to_string(),
@@ -29,6 +30,7 @@ impl HeaderChecker for XXssProtectionChecker {
                     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection".to_string(),
                 ],
                 context_note: None,
+                notes: None,
             },
         }
     }

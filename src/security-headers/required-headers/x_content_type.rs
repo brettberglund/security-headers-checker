@@ -23,6 +23,12 @@ impl HeaderChecker for XContentTypeOptionsChecker {
                         .to_string(),
                 ],
                 context_note: None,
+                notes: Some(
+                    "Rarely a deliberate trade-off — this header is nearly free to add with no \
+                     functional downside, so its absence is usually oversight rather than a \
+                     considered decision."
+                        .to_string(),
+                ),
             },
             Some(v) => {
                 if v.trim().eq_ignore_ascii_case("nosniff") {
@@ -35,6 +41,7 @@ impl HeaderChecker for XContentTypeOptionsChecker {
                         remediation: String::new(),
                         references: vec![],
                         context_note: None,
+                        notes: None,
                     }
                 } else {
                     CheckResult {
@@ -53,6 +60,7 @@ impl HeaderChecker for XContentTypeOptionsChecker {
                                 .to_string(),
                         ],
                         context_note: None,
+                        notes: None,
                     }
                 }
             }

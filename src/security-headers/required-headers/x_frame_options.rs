@@ -24,6 +24,12 @@ impl HeaderChecker for XFrameOptionsChecker {
                     "https://owasp.org/www-project-secure-headers/#x-frame-options".to_string(),
                 ],
                 context_note: None,
+                notes: Some(
+                    "Sites that want to be embeddable: widgets, video players, partner \
+                     integrations may omit this deliberately. It matters most on pages with \
+                     sensitive, click-driven actions."
+                        .to_string(),
+                ),
             },
             Some(v) => {
                 let upper = v.trim().to_uppercase();
@@ -46,6 +52,7 @@ impl HeaderChecker for XFrameOptionsChecker {
                                 .to_string(),
                         ],
                         context_note: None,
+                        notes: None,
                     }
                 } else if upper.starts_with("ALLOW-FROM") {
                     CheckResult {
@@ -64,6 +71,7 @@ impl HeaderChecker for XFrameOptionsChecker {
                                 .to_string(),
                         ],
                         context_note: None,
+                        notes: None,
                     }
                 } else if upper == "DENY" || upper == "SAMEORIGIN" {
                     CheckResult {
@@ -75,6 +83,7 @@ impl HeaderChecker for XFrameOptionsChecker {
                         remediation: String::new(),
                         references: vec![],
                         context_note: None,
+                        notes: None,
                     }
                 } else {
                     CheckResult {
@@ -93,6 +102,7 @@ impl HeaderChecker for XFrameOptionsChecker {
                                 .to_string(),
                         ],
                         context_note: None,
+                        notes: None,
                     }
                 }
             }

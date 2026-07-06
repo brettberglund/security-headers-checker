@@ -1,9 +1,9 @@
 {
   "header": "Cache-Control",
-  "status": "present",
-  "severity": "info",
-  "value": "no-store",
   "message": "",
+  "references": [],
   "remediation": "",
-  "references": []
+  "severity": "info",
+  "status": "present",
+  "value": "no-store"
 }

@@ -24,6 +24,13 @@ impl HeaderChecker for CoepChecker {
                      Has no effect on pages that do not use those APIs."
                         .to_string(),
                 ),
+                notes: Some(
+                    "require-corp means every third-party subresource such as ads, CDN assets, \
+                     widgets must opt in via CORP/CORS headers or it fails to load \
+                     outright; one of the most disruptive headers to adopt on an ad-supported \
+                     or widget-heavy site."
+                        .to_string(),
+                ),
             },
             Some(v) => CheckResult {
                 header: self.name().to_string(),
@@ -34,6 +41,7 @@ impl HeaderChecker for CoepChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
         }
     }

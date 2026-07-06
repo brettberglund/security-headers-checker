@@ -24,6 +24,12 @@ impl HeaderChecker for CorpChecker {
                      cross-origin-loaded assets gain little from this header."
                         .to_string(),
                 ),
+                notes: Some(
+                    "Restricts cross-origin embedding of your assets, which conflicts with \
+                     wanting public content (logos, CDN assets, public API responses) to remain \
+                     hotlinkable/embeddable by other sites."
+                        .to_string(),
+                ),
             },
             Some(v) => CheckResult {
                 header: self.name().to_string(),
@@ -34,6 +40,7 @@ impl HeaderChecker for CorpChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
         }
     }

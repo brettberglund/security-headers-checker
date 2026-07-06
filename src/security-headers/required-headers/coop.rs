@@ -24,6 +24,12 @@ impl HeaderChecker for CoopChecker {
                      by its absence."
                         .to_string(),
                 ),
+                notes: Some(
+                    "Setting same-origin can silently break OAuth-style popup login flows \
+                     (e.g. \"Sign in with Google\") that rely on window.opener/postMessage, \
+                     unless the more permissive same-origin-allow-popups is used instead."
+                        .to_string(),
+                ),
             },
             Some(v) => CheckResult {
                 header: self.name().to_string(),
@@ -34,6 +40,7 @@ impl HeaderChecker for CoopChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
         }
     }

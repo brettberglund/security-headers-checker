@@ -6,6 +6,27 @@ A CLI tool that scans URLs for missing or misconfigured HTTP security headers an
 Some header fields depend on the context of the site's functionality and how it was built.
 These fields still take away from score but at a reduced rate, so take it with a grain of salt.
 
+This tool only reads HTTP response headers — it never renders HTML, executes JavaScript, or downloads/opens files — so it avoids the drive-by-download and browser-exploit risks of opening a suspicious link directly. That said, it still connects to the target (and follows redirects) directly from your machine, exposing your real IP to whatever site you're checking. If you're probing a link from a scammer or other untrusted source and want to keep your IP hidden from them, run it through a VPN or Tor.
+
+### Why large, well-run sites still score low
+
+Don't read an F on Google, Wikipedia, GitHub, or LinkedIn as "these engineers don't know what they're doing." Every header this tool checks is defense-in-depth — it reduces the *blast radius* if something else already goes wrong (an XSS bug, a compromised third-party script, a malicious ad), rather than fixing a primary vulnerability. For a large site with hundreds of embeds, widgets, and login integrations, shipping the strictest possible version of each header is a real trade-off against breaking functionality for millions of users, not just an oversight:
+
+| Header | What it blocks | Why sites often skip or weaken it |
+|---|---|---|
+| `Content-Security-Policy` | Injected/XSS'd scripts from running or exfiltrating data | Strict CSP requires allowlisting every script/style source; one new ad or CSS-in-JS library breaks the page unless CSP is updated in lockstep, hence the common `unsafe-inline` |
+| `X-Frame-Options` | Clickjacking via invisible iframes | Sites that want to be embeddable (widgets, video players, partner integrations) omit it deliberately |
+| `X-Content-Type-Options` | MIME-sniffing into a more dangerous content type | Rarely a deliberate trade-off — nearly free to add, so its absence is usually oversight |
+| `Referrer-Policy` | Leaking full URLs (session tokens, search terms) to third-party sites | Modern browsers already default to a safe policy even with no header set; some sites want referrer data for ad-attribution analytics |
+| `Permissions-Policy` | Malicious/compromised iframes invoking camera, mic, geolocation, etc. | Misconfiguring the allowlist can break a legitimate embedded feature (e.g. a video-chat widget) |
+| `Cross-Origin-Opener-Policy` | Cross-window attacks (tabnabbing) via `window.opener` | `same-origin` can silently break OAuth-style popup logins ("Sign in with Google") unless the more permissive `same-origin-allow-popups` is used |
+| `Cross-Origin-Embedder-Policy` | Spectre-class cross-origin timing attacks | `require-corp` requires every third-party subresource to opt in via CORP/CORS or it fails to load — very disruptive on ad-supported or widget-heavy sites |
+| `Cross-Origin-Resource-Policy` | Cross-origin reads of your assets via Spectre-style side channels | Conflicts with wanting public assets (logos, CDN files, public API responses) to stay hotlinkable/embeddable |
+| `Cache-Control: no-store` | Sensitive data getting cached on shared/public devices | Disables all caching — actively harmful on high-traffic pages that have no sensitive data to protect |
+| `Strict-Transport-Security` | Downgrade attacks, first-visit HTTP exposure | The one header in this list with essentially no legitimate reason to omit if the site serves HTTPS at all |
+
+Each of these findings also carries a `notes` field in the JSON/HTML report (distinct from `context_note`, which affects scoring) explaining the specific trade-off for that header. Read it before assuming a low grade means the site is genuinely insecure.
+
 ## Usage
 
 ```

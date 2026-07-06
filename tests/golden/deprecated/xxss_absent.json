@@ -1,9 +1,9 @@
 {
   "header": "X-XSS-Protection",
-  "status": "missing",
-  "severity": "info",
-  "value": null,
   "message": "",
+  "references": [],
   "remediation": "",
-  "references": []
+  "severity": "info",
+  "status": "missing",
+  "value": null
 }

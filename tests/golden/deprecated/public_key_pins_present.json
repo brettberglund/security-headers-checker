@@ -1,11 +1,11 @@
 {
   "header": "Public-Key-Pins",
-  "status": "deprecated",
-  "severity": "medium",
-  "value": "pin-sha256=\"abc\"; max-age=5184000",
   "message": "HPKP is deprecated and risks making your site inaccessible if pinned keys are lost.",
-  "remediation": "Remove this header. Prefer Certificate Transparency monitoring instead.",
   "references": [
     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Public-Key-Pins"
-  ]
+  ],
+  "remediation": "Remove this header. Prefer Certificate Transparency monitoring instead.",
+  "severity": "medium",
+  "status": "deprecated",
+  "value": "pin-sha256=\"abc\"; max-age=5184000"
 }

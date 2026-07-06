@@ -1,9 +1,9 @@
 {
   "header": "X-Frame-Options",
-  "status": "present",
-  "severity": "info",
-  "value": "DENY",
   "message": "",
+  "references": [],
   "remediation": "",
-  "references": []
+  "severity": "info",
+  "status": "present",
+  "value": "DENY"
 }

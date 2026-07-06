@@ -1,11 +1,12 @@
 {
   "header": "Referrer-Policy",
-  "status": "missing",
-  "severity": "low",
-  "value": null,
   "message": "Referrer-Policy is missing. Browser default may leak URL data in the Referer header.",
-  "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+  "notes": "Modern browsers already default to a fairly safe policy (strict-origin-when-cross-origin) even with no header set, so omitting it is lower-risk than it used to be; some sites also want full referrer data to flow for ad-attribution analytics.",
   "references": [
     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy"
-  ]
+  ],
+  "remediation": "Add: Referrer-Policy: strict-origin-when-cross-origin",
+  "severity": "low",
+  "status": "missing",
+  "value": null
 }

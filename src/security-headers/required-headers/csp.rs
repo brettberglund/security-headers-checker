@@ -26,11 +26,17 @@ impl HeaderChecker for CspChecker {
                         .to_string(),
                 ],
                 context_note: None,
+                notes: Some(CSP_TRADEOFF_NOTE.to_string()),
             },
             Some(v) => analyze_csp(self.name(), v),
         }
     }
 }
+
+const CSP_TRADEOFF_NOTE: &str = "Often skipped or weakened (e.g. 'unsafe-inline'/'unsafe-eval') because a strict policy \
+     requires allowlisting every script and style source across the whole site; one new \
+     third-party script, ad, or inline style can break the page unless CSP is updated in \
+     lockstep.";
 
 pub(crate) fn analyze_csp(header_name: &str, v: String) -> CheckResult {
     let mut high_msgs: Vec<String> = vec![];
@@ -99,6 +105,7 @@ pub(crate) fn analyze_csp(header_name: &str, v: String) -> CheckResult {
             remediation: String::new(),
             references: vec![],
             context_note: None,
+            notes: None,
         };
     }
 
@@ -123,6 +130,7 @@ pub(crate) fn analyze_csp(header_name: &str, v: String) -> CheckResult {
             "https://owasp.org/www-project-secure-headers/#content-security-policy".to_string(),
         ],
         context_note: None,
+        notes: Some(CSP_TRADEOFF_NOTE.to_string()),
     }
 }
 

@@ -141,6 +141,7 @@ mod tests {
             remediation: String::new(),
             references: vec![],
             context_note: None,
+            notes: None,
         }
     }
 

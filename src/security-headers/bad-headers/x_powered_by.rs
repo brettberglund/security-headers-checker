@@ -17,6 +17,7 @@ impl HeaderChecker for XPoweredByChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
             Some(v) => CheckResult {
                 header: self.name().to_string(),
@@ -30,6 +31,7 @@ impl HeaderChecker for XPoweredByChecker {
                     "https://owasp.org/www-project-secure-headers/#x-powered-by".to_string(),
                 ],
                 context_note: None,
+                notes: None,
             },
         }
     }

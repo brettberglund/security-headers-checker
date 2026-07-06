@@ -17,6 +17,7 @@ impl HeaderChecker for XAspNetMvcVersionChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
             Some(v) => CheckResult {
                 header: self.name().to_string(),
@@ -29,6 +30,7 @@ impl HeaderChecker for XAspNetMvcVersionChecker {
                         .to_string(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
         }
     }

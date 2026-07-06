@@ -1,11 +1,11 @@
 {
   "header": "Referrer-Policy",
-  "status": "misconfigured",
-  "severity": "medium",
-  "value": "unsafe-url",
   "message": "unsafe-url sends the full URL (including path and query string) to all origins, including cross-origin requests over HTTP.",
-  "remediation": "Use: Referrer-Policy: strict-origin-when-cross-origin",
   "references": [
     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy"
-  ]
+  ],
+  "remediation": "Use: Referrer-Policy: strict-origin-when-cross-origin",
+  "severity": "medium",
+  "status": "misconfigured",
+  "value": "unsafe-url"
 }

@@ -19,6 +19,7 @@ impl HeaderChecker for ServerChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
             Some(v) => {
                 let has_version = contains_version(&v);
@@ -49,6 +50,7 @@ impl HeaderChecker for ServerChecker {
                         "https://owasp.org/www-project-secure-headers/#server".to_string(),
                     ],
                     context_note: None,
+                    notes: None,
                 }
             }
         }

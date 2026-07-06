@@ -17,6 +17,7 @@ impl HeaderChecker for PublicKeyPinsChecker {
                 remediation: String::new(),
                 references: vec![],
                 context_note: None,
+                notes: None,
             },
             Some(v) => CheckResult {
                 header: self.name().to_string(),
@@ -29,6 +30,7 @@ impl HeaderChecker for PublicKeyPinsChecker {
                     "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Public-Key-Pins".to_string(),
                 ],
                 context_note: None,
+                notes: None,
             },
         }
     }

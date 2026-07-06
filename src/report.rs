@@ -108,6 +108,10 @@ fn render_result_row(r: &CheckResult) -> String {
             .collect::<Vec<_>>()
             .join("<br>")
     };
+    let notes_cell = match &r.notes {
+        Some(n) => format!("<span class=\"notes\">{}</span>", html_escape(n)),
+        None => "<span class=\"none\">—</span>".to_string(),
+    };
     format!(
         "<tr>\
           <td><strong>{header}</strong></td>\
@@ -117,6 +121,7 @@ fn render_result_row(r: &CheckResult) -> String {
           <td>{message}</td>\
           <td>{remediation}</td>\
           <td class=\"refs-cell\">{refs}</td>\
+          <td class=\"notes-cell\">{notes}</td>\
         </tr>",
         header = html_escape(&r.header),
         status = status_badge(&r.status),
@@ -125,6 +130,7 @@ fn render_result_row(r: &CheckResult) -> String {
         message = html_escape(&r.message),
         remediation = html_escape(&r.remediation),
         refs = refs_cell,
+        notes = notes_cell,
     )
 }
 
@@ -301,6 +307,14 @@ fn render_html(result: &EvaluationResult) -> String {
     .refs-cell a:hover {{
       text-decoration: underline;
     }}
+    .notes-cell {{
+      max-width: 280px;
+    }}
+    .notes {{
+      color: #5c6bc0;
+      font-size: 12px;
+      font-style: italic;
+    }}
     .none {{
       color: #bdbdbd;
     }}
@@ -351,6 +365,7 @@ fn render_html(result: &EvaluationResult) -> String {
             <th>Finding</th>
             <th>Remediation</th>
             <th>References</th>
+            <th>Notes</th>
           </tr>
         </thead>
         <tbody>

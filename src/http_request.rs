@@ -14,6 +14,7 @@ pub struct RedirectHop {
 
 pub struct RequestResult {
     pub final_url: String,
+    pub final_status_code: u16,
     pub final_headers: HeaderMap,
     pub redirect_chain: Vec<RedirectHop>,
     pub http_to_https: bool,
@@ -21,6 +22,7 @@ pub struct RequestResult {
 
 pub fn fetch(url: &str) -> Result<RequestResult, String> {
     let client = Client::builder()
+        .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
         .redirect(Policy::none())
         .build()
         .map_err(|e| e.to_string())?;
@@ -60,6 +62,7 @@ pub fn fetch(url: &str) -> Result<RequestResult, String> {
         } else {
             return Ok(RequestResult {
                 final_url: current_url,
+                final_status_code: status.as_u16(),
                 final_headers: headers,
                 redirect_chain,
                 http_to_https,

@@ -29,6 +29,12 @@ impl HeaderChecker for HstsChecker {
                         .to_string(),
                 ],
                 context_note: None,
+                notes: Some(
+                    "There's rarely a legitimate reason to omit HSTS on a \
+                     site that already serves HTTPS. Its absence is usually \
+                     an oversight, not a deliberate trade-off."
+                        .to_string(),
+                ),
             },
             Some(v) => analyze_hsts(self.name(), v),
         }
@@ -97,6 +103,7 @@ pub(crate) fn analyze_hsts(header_name: &str, v: String) -> CheckResult {
             remediation: String::new(),
             references: vec![],
             context_note: None,
+            notes: None,
         };
     }
 
@@ -121,6 +128,7 @@ pub(crate) fn analyze_hsts(header_name: &str, v: String) -> CheckResult {
             "https://owasp.org/www-project-secure-headers/#strict-transport-security".to_string(),
         ],
         context_note: None,
+        notes: None,
     }
 }
 

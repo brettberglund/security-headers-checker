@@ -24,6 +24,13 @@ impl HeaderChecker for ReferrerPolicyChecker {
                         .to_string(),
                 ],
                 context_note: None,
+                notes: Some(
+                    "Modern browsers already default to a fairly safe policy \
+                     (strict-origin-when-cross-origin) even with no header set, so omitting it \
+                     is lower-risk than it used to be; some sites also want full referrer data \
+                     to flow for ad-attribution analytics."
+                        .to_string(),
+                ),
             },
             Some(v) => {
                 // When multiple values are listed, browsers use the last recognised one.
@@ -51,6 +58,7 @@ impl HeaderChecker for ReferrerPolicyChecker {
                                 .to_string(),
                         ],
                         context_note: None,
+                        notes: None,
                     },
                     "no-referrer-when-downgrade" => CheckResult {
                         header: self.name().to_string(),
@@ -68,6 +76,7 @@ impl HeaderChecker for ReferrerPolicyChecker {
                                 .to_string(),
                         ],
                         context_note: None,
+                        notes: None,
                     },
                     _ => CheckResult {
                         header: self.name().to_string(),
@@ -78,6 +87,7 @@ impl HeaderChecker for ReferrerPolicyChecker {
                         remediation: String::new(),
                         references: vec![],
                         context_note: None,
+                        notes: None,
                     },
                 }
             }

@@ -1,9 +1,9 @@
 {
   "header": "Content-Security-Policy",
-  "status": "present",
-  "severity": "info",
-  "value": "default-src 'self'; frame-ancestors 'none'",
   "message": "",
+  "references": [],
   "remediation": "",
-  "references": []
+  "severity": "info",
+  "status": "present",
+  "value": "default-src 'self'; frame-ancestors 'none'"
 }

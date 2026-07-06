@@ -24,11 +24,16 @@ impl HeaderChecker for CacheControlChecker {
                      safely omit or relax this header."
                         .to_string(),
                 ),
+                notes: Some(CACHE_CONTROL_TRADEOFF_NOTE.to_string()),
             },
             Some(v) => analyze_cache_control(self.name(), v),
         }
     }
 }
+
+const CACHE_CONTROL_TRADEOFF_NOTE: &str = "Disables all caching, which is actively harmful on high-traffic pages with no sensitive \
+     data. It is appropriate mainly for authenticated or otherwise sensitive endpoints, not public \
+     static content.";
 
 fn analyze_cache_control(header_name: &str, v: String) -> CheckResult {
     let lower = v.to_lowercase();
@@ -85,6 +90,7 @@ fn analyze_cache_control(header_name: &str, v: String) -> CheckResult {
             remediation: String::new(),
             references: vec![],
             context_note: None,
+            notes: None,
         };
     }
 
@@ -112,6 +118,7 @@ fn analyze_cache_control(header_name: &str, v: String) -> CheckResult {
              omit it for performance."
                 .to_string(),
         ),
+        notes: Some(CACHE_CONTROL_TRADEOFF_NOTE.to_string()),
     }
 }
 
